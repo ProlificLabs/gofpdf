@@ -747,7 +747,7 @@ func ExampleFpdf_HTMLBasicNew() {
 	pdf.AddPage()
 	pdf.SetFont("Helvetica", "", 20)
 	_, lineHt := pdf.GetFontSize()
-	pdf.Write(lineHt, "To find out what's new in this tutorial, click ")
+	pdf.Write(lineHt, "To find out what's new in this tutorial, click ", false)
 	pdf.SetFont("", "U", 0)
 	link := pdf.AddLink()
 	pdf.WriteLinkID(lineHt, "here", link)
@@ -795,20 +795,20 @@ func ExampleFpdf_WriteAligned() {
 	pdf.SetRightMargin(50.0)
 	pdf.AddPage()
 	pdf.SetFont("Helvetica", "", 12)
-	pdf.WriteAligned(0, 35, "This text is the default alignment, Left", "")
+	pdf.WriteAligned(0, 35, "This text is the default alignment, Left", "", false)
 	pdf.Ln(35)
-	pdf.WriteAligned(0, 35, "This text is aligned Left", "L")
+	pdf.WriteAligned(0, 35, "This text is aligned Left", "L", false)
 	pdf.Ln(35)
-	pdf.WriteAligned(0, 35, "This text is aligned Center", "C")
+	pdf.WriteAligned(0, 35, "This text is aligned Center", "C", false)
 	pdf.Ln(35)
-	pdf.WriteAligned(0, 35, "This text is aligned Right", "R")
+	pdf.WriteAligned(0, 35, "This text is aligned Right", "R", false)
 	pdf.Ln(35)
 	line := "This can by used to write justified text"
 	leftMargin, _, rightMargin, _ := pdf.GetMargins()
 	pageWidth, _ := pdf.GetPageSize()
 	pageWidth -= leftMargin + rightMargin
 	pdf.SetWordSpacing((pageWidth - pdf.GetStringWidth(line)) / float64(strings.Count(line, " ")))
-	pdf.WriteAligned(pageWidth, 35, line, "L")
+	pdf.WriteAligned(pageWidth, 35, line, "L", false)
 	fileStr := example.Filename("Fpdf_WriteAligned")
 	err := pdf.OutputFileAndClose(fileStr)
 	example.Summary(err, fileStr)
@@ -913,9 +913,9 @@ func ExampleFpdf_SetAcceptPageBreakFunc() {
 		wd := pdf.GetStringWidth(titleStr) + 6
 		pdf.SetX((pageWd - wd) / 2)
 		pdf.SetTextColor(128, 128, 160)
-		pdf.Write(12, titleStr[:2])
+		pdf.Write(12, titleStr[:2], false)
 		pdf.SetTextColor(128, 128, 128)
-		pdf.Write(12, titleStr[2:])
+		pdf.Write(12, titleStr[2:], false)
 		pdf.Ln(20)
 		y0 = pdf.GetY()
 	})
@@ -1669,7 +1669,7 @@ func ExampleFpdf_SetProtection() {
 	pdf.SetProtection(gofpdf.CnProtectPrint, "123", "abc")
 	pdf.AddPage()
 	pdf.SetFont("Arial", "", 12)
-	pdf.Write(10, "Password-protected.")
+	pdf.Write(10, "Password-protected.", false)
 	fileStr := example.Filename("Fpdf_SetProtection")
 	err := pdf.OutputFileAndClose(fileStr)
 	example.Summary(err, fileStr)
@@ -1736,7 +1736,7 @@ func ExampleFpdf_AddLayer() {
 	pdf := gofpdf.New("P", "mm", "A4", "")
 	pdf.AddPage()
 	pdf.SetFont("Arial", "", 15)
-	pdf.Write(8, "This line doesn't belong to any layer.\n")
+	pdf.Write(8, "This line doesn't belong to any layer.\n", false)
 
 	// Define layers
 	l1 := pdf.AddLayer("Layer 1", true)
@@ -1747,17 +1747,17 @@ func ExampleFpdf_AddLayer() {
 
 	// First layer
 	pdf.BeginLayer(l1)
-	pdf.Write(8, "This line belongs to layer 1.\n")
+	pdf.Write(8, "This line belongs to layer 1.\n", false)
 	pdf.EndLayer()
 
 	// Second layer
 	pdf.BeginLayer(l2)
-	pdf.Write(8, "This line belongs to layer 2.\n")
+	pdf.Write(8, "This line belongs to layer 2.\n", false)
 	pdf.EndLayer()
 
 	// First layer again
 	pdf.BeginLayer(l1)
-	pdf.Write(8, "This line belongs to layer 1 again.\n")
+	pdf.Write(8, "This line belongs to layer 1 again.\n", false)
 	pdf.EndLayer()
 
 	fileStr := example.Filename("Fpdf_AddLayer")
@@ -2229,7 +2229,7 @@ func ExampleFpdf_SetJavascript() {
 	pdf.SetJavascript("print(true);")
 	pdf.AddPage()
 	pdf.SetFont("Arial", "", 12)
-	pdf.Write(10, "Auto-print.")
+	pdf.Write(10, "Auto-print.", false)
 	fileStr := example.Filename("Fpdf_SetJavascript")
 	err := pdf.OutputFileAndClose(fileStr)
 	example.Summary(err, fileStr)
@@ -2273,7 +2273,7 @@ func ExampleFpdf_RegisterAlias() {
 	for i := 1; i <= numSections; i++ {
 		pdf.AddPage()
 		pdf.RegisterAlias(fmt.Sprintf("{mark %d}", i), fmt.Sprintf("%d", pdf.PageNo()))
-		pdf.Write(10, fmt.Sprintf("Section %d, page %d of {nb}", i, pdf.PageNo()))
+		pdf.Write(10, fmt.Sprintf("Section %d, page %d of {nb}", i, pdf.PageNo()), false)
 	}
 
 	fileStr := example.Filename("Fpdf_RegisterAlias")
@@ -2307,7 +2307,7 @@ func ExampleFpdf_RegisterAlias_utf8() {
 	for i := 1; i <= numSections; i++ {
 		pdf.AddPage()
 		pdf.RegisterAlias(fmt.Sprintf("{ĉi tiu marko %d}", i), fmt.Sprintf("%d", pdf.PageNo()))
-		pdf.Write(10, fmt.Sprintf("Sekcio %d, paĝo %d de {entute}", i, pdf.PageNo()))
+		pdf.Write(10, fmt.Sprintf("Sekcio %d, paĝo %d de {entute}", i, pdf.PageNo()), false)
 	}
 
 	fileStr := example.Filename("Fpdf_RegisterAliasUTF8")
@@ -2356,7 +2356,7 @@ func ExampleNewGrid() {
 	pdf.SetAlpha(1.0, "Normal")
 	pdf.SetXY(gr.X(0.5), gr.Y(1.35))
 	pdf.SetFontSize(14)
-	pdf.Write(0, "Solar energy (MWh) per month, 2016")
+	pdf.Write(0, "Solar energy (MWh) per month, 2016", false)
 	pdf.AddPage()
 
 	gr = gofpdf.NewGrid(13, 10, 187, 274)
@@ -2402,9 +2402,9 @@ func ExampleFpdf_SetPageBox() {
 	pdf.SetFont("Arial", "", pdf.UnitToPointConvert(fontsize))
 	pdf.AddPage()
 	pdf.MoveTo(fontsize, fontsize)
-	pdf.Write(fontsize, "This will be cropped from printed output")
+	pdf.Write(fontsize, "This will be cropped from printed output", false)
 	pdf.MoveTo(boxmargin+fontsize, boxmargin+fontsize)
-	pdf.Write(fontsize, "This will be displayed in cropped output")
+	pdf.Write(fontsize, "This will be displayed in cropped output", false)
 	fileStr := example.Filename("Fpdf_PageBox")
 	err := pdf.OutputFileAndClose(fileStr)
 	example.Summary(err, fileStr)
@@ -2426,34 +2426,34 @@ func ExampleFpdf_SubWrite() {
 	pdf.SetFont("Arial", "", fontSize)
 	_, lineHt := pdf.GetFontSize()
 
-	pdf.Write(lineHt, "Hello World!")
+	pdf.Write(lineHt, "Hello World!", false)
 	pdf.SetX(halfX)
-	pdf.Write(lineHt, "This is standard text.\n")
+	pdf.Write(lineHt, "This is standard text.\n", false)
 	pdf.Ln(lineHt * 2)
 
 	pdf.SubWrite(10, "H", 33, 0, 0, "")
-	pdf.Write(10, "ello World!")
+	pdf.Write(10, "ello World!", false)
 	pdf.SetX(halfX)
-	pdf.Write(10, "This is text with a capital first letter.\n")
+	pdf.Write(10, "This is text with a capital first letter.\n", false)
 	pdf.Ln(lineHt * 2)
 
 	pdf.SubWrite(lineHt, "Y", 6, 0, 0, "")
-	pdf.Write(lineHt, "ou can also begin the sentence with a small letter. And word wrap also works if the line is too long, like this one is.")
+	pdf.Write(lineHt, "ou can also begin the sentence with a small letter. And word wrap also works if the line is too long, like this one is.", false)
 	pdf.SetX(halfX)
-	pdf.Write(lineHt, "This is text with a small first letter.\n")
+	pdf.Write(lineHt, "This is text with a small first letter.\n", false)
 	pdf.Ln(lineHt * 2)
 
-	pdf.Write(lineHt, "The world has a lot of km")
+	pdf.Write(lineHt, "The world has a lot of km", false)
 	pdf.SubWrite(lineHt, "2", 6, 4, 0, "")
 	pdf.SetX(halfX)
-	pdf.Write(lineHt, "This is text with a superscripted letter.\n")
+	pdf.Write(lineHt, "This is text with a superscripted letter.\n", false)
 	pdf.Ln(lineHt * 2)
 
-	pdf.Write(lineHt, "The world has a lot of H")
+	pdf.Write(lineHt, "The world has a lot of H", false)
 	pdf.SubWrite(lineHt, "2", 6, -3, 0, "")
-	pdf.Write(lineHt, "O")
+	pdf.Write(lineHt, "O", false)
 	pdf.SetX(halfX)
-	pdf.Write(lineHt, "This is text with a subscripted letter.\n")
+	pdf.Write(lineHt, "This is text with a subscripted letter.\n", false)
 
 	fileStr := example.Filename("Fpdf_SubWrite")
 	err := pdf.OutputFileAndClose(fileStr)
@@ -2492,7 +2492,7 @@ func ExampleFpdf_SetPage() {
 		pdf.AddPage()
 		pdf.Ln(1)
 		//Custom label per sensor
-		pdf.WriteAligned(0, 0, "Temperature Sensor "+strconv.Itoa(i+1)+" (C) vs Time (min)", "C")
+		pdf.WriteAligned(0, 0, "Temperature Sensor "+strconv.Itoa(i+1)+" (C) vs Time (min)", "C", false)
 		pdf.Ln(0.5)
 		graph := gofpdf.NewGrid(pdf.GetX(), pdf.GetY(), 20, 10)
 		graph.TickmarksContainX(0, xMax)
@@ -2541,7 +2541,7 @@ func ExampleFpdf_SetFillColor() {
 		pdf.Rect(0, 0, 40, 40, "FD")
 		pdf.SetFontSize(12)
 		pdf.SetXY(5, 5)
-		pdf.Write(0, "Test")
+		pdf.Write(0, "Test", false)
 		pdf.TransformEnd()
 	}
 
@@ -2791,7 +2791,7 @@ func ExampleFpdf_SetTextRenderingMode() {
 	pdf.Write(lineSz, "This document demonstrates various modes of text rendering. Search for \"Mode 3\" "+
 		"to locate text that has been rendered invisibly. This selection can be copied "+
 		"into the clipboard as usual and is useful for overlaying onto non-textual elements such "+
-		"as images to make them searchable.\n\n")
+		"as images to make them searchable.\n\n", false)
 	fontSz = float64(125)
 	lineSz = pdf.PointToUnitConvert(fontSz)
 	pdf.SetFontSize(fontSz)

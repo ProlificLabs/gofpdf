@@ -483,9 +483,9 @@ type Pdf interface {
 	UnitToPointConvert(u float64) (pt float64)
 	UseTemplateScaled(t Template, corner PointType, size SizeType)
 	UseTemplate(t Template)
-	WriteAligned(width, lineHeight float64, textStr, alignStr string)
+	WriteAligned(width, lineHeight float64, textStr, alignStr string, fill bool)
 	Writef(h float64, fmtStr string, args ...interface{})
-	Write(h float64, txtStr string)
+	Write(h float64, txtStr string, fill bool)
 	WriteLinkID(h float64, displayStr string, linkID int)
 	WriteLinkString(h float64, displayStr, targetStr string)
 }

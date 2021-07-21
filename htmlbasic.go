@@ -170,9 +170,9 @@ func (html *HTMLBasicType) Write(lineHt float64, htmlStr string) {
 				hrefStr = ""
 			} else {
 				if alignStr == "C" || alignStr == "R" {
-					html.pdf.WriteAligned(0, lineHt, el.Str, alignStr)
+					html.pdf.WriteAligned(0, lineHt, el.Str, alignStr, false)
 				} else {
-					html.pdf.Write(lineHt, el.Str)
+					html.pdf.Write(lineHt, el.Str, false)
 				}
 			}
 		case 'O':

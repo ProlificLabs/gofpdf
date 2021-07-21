@@ -2785,7 +2785,7 @@ func (f *Fpdf) MultiCell(w, h float64, txtStr, borderStr, alignStr string, fill 
 }
 
 // write outputs text in flowing mode
-func (f *Fpdf) write(h float64, txtStr string, link int, linkStr string) {
+func (f *Fpdf) write(h float64, txtStr string, link int, linkStr string, fill bool) {
 	// dbg("Write")
 	cw := f.currentFont.Cw
 	w := f.w - f.rMargin - f.x
@@ -2817,9 +2817,9 @@ func (f *Fpdf) write(h float64, txtStr string, link int, linkStr string) {
 		if c == '\n' {
 			// Explicit line break
 			if f.isCurrentUTF8 {
-				f.CellFormat(w, h, string([]rune(s)[j:i]), "", 2, "", false, link, linkStr)
+				f.CellFormat(w, h, string([]rune(s)[j:i]), "", 2, "", fill, link, linkStr)
 			} else {
-				f.CellFormat(w, h, s[j:i], "", 2, "", false, link, linkStr)
+				f.CellFormat(w, h, s[j:i], "", 2, "", fill, link, linkStr)
 			}
 			i++
 			sep = -1
@@ -2897,27 +2897,29 @@ func (f *Fpdf) write(h float64, txtStr string, link int, linkStr string) {
 // It is possible to put a link on the text.
 //
 // h indicates the line height in the unit of measure specified in New().
-func (f *Fpdf) Write(h float64, txtStr string) {
-	f.write(h, txtStr, 0, "")
+//
+// fill is true to paint the cell background or false to leave it transparent.
+func (f *Fpdf) Write(h float64, txtStr string, fill bool) {
+	f.write(h, txtStr, 0, "", fill)
 }
 
 // Writef is like Write but uses printf-style formatting. See the documentation
 // for package fmt for more details on fmtStr and args.
 func (f *Fpdf) Writef(h float64, fmtStr string, args ...interface{}) {
-	f.write(h, sprintf(fmtStr, args...), 0, "")
+	f.write(h, sprintf(fmtStr, args...), 0, "", false)
 }
 
 // WriteLinkString writes text that when clicked launches an external URL. See
 // Write() for argument details.
 func (f *Fpdf) WriteLinkString(h float64, displayStr, targetStr string) {
-	f.write(h, displayStr, 0, targetStr)
+	f.write(h, displayStr, 0, targetStr, false)
 }
 
 // WriteLinkID writes text that when clicked jumps to another location in the
 // PDF. linkID is an identifier returned by AddLink(). See Write() for argument
 // details.
 func (f *Fpdf) WriteLinkID(h float64, displayStr string, linkID int) {
-	f.write(h, displayStr, linkID, "")
+	f.write(h, displayStr, linkID, "", false)
 }
 
 // WriteAligned is an implementation of Write that makes it possible to align
@@ -2932,7 +2934,9 @@ func (f *Fpdf) WriteLinkID(h float64, displayStr string, linkID int) {
 //
 // alignStr sees to horizontal alignment of the given textStr. The options are
 // "L", "C" and "R" (Left, Center, Right). The default is "L".
-func (f *Fpdf) WriteAligned(width, lineHeight float64, textStr, alignStr string) {
+//
+// fill is true to paint the cell background or false to leave it transparent.
+func (f *Fpdf) WriteAligned(width, lineHeight float64, textStr, alignStr string, fill bool) {
 	lMargin, _, rMargin, _ := f.GetMargins()
 
 	pageWidth, _ := f.GetPageSize()
@@ -2957,15 +2961,15 @@ func (f *Fpdf) WriteAligned(width, lineHeight float64, textStr, alignStr string)
 		switch alignStr {
 		case "C":
 			f.SetLeftMargin(lMargin + ((width - lineWidth) / 2))
-			f.Write(lineHeight, lineStr)
+			f.Write(lineHeight, lineStr, fill)
 			f.SetLeftMargin(lMargin)
 		case "R":
 			f.SetLeftMargin(lMargin + (width - lineWidth) - 2.01*f.cMargin)
-			f.Write(lineHeight, lineStr)
+			f.Write(lineHeight, lineStr, fill)
 			f.SetLeftMargin(lMargin)
 		default:
 			f.SetRightMargin(pageWidth - lMargin - width)
-			f.Write(lineHeight, lineStr)
+			f.Write(lineHeight, lineStr, fill)
 			f.SetRightMargin(rMargin)
 		}
 	}
