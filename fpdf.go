@@ -2854,15 +2854,15 @@ func (f *Fpdf) write(h float64, txtStr string, link int, linkStr string, fill bo
 					i++
 				}
 				if f.isCurrentUTF8 {
-					f.CellFormat(w, h, string([]rune(s)[j:i]), "", 2, "", false, link, linkStr)
+					f.CellFormat(w, h, string([]rune(s)[j:i]), "", 2, "", fill, link, linkStr)
 				} else {
-					f.CellFormat(w, h, s[j:i], "", 2, "", false, link, linkStr)
+					f.CellFormat(w, h, s[j:i], "", 2, "", fill, link, linkStr)
 				}
 			} else {
 				if f.isCurrentUTF8 {
-					f.CellFormat(w, h, string([]rune(s)[j:sep]), "", 2, "", false, link, linkStr)
+					f.CellFormat(w, h, string([]rune(s)[j:sep]), "", 2, "", fill, link, linkStr)
 				} else {
-					f.CellFormat(w, h, s[j:sep], "", 2, "", false, link, linkStr)
+					f.CellFormat(w, h, s[j:sep], "", 2, "", fill, link, linkStr)
 				}
 				i = sep + 1
 			}
@@ -2882,9 +2882,9 @@ func (f *Fpdf) write(h float64, txtStr string, link int, linkStr string, fill bo
 	// Last chunk
 	if i != j {
 		if f.isCurrentUTF8 {
-			f.CellFormat(l/1000*f.fontSize, h, string([]rune(s)[j:]), "", 0, "", false, link, linkStr)
+			f.CellFormat(l/1000*f.fontSize, h, string([]rune(s)[j:]), "", 0, "", fill, link, linkStr)
 		} else {
-			f.CellFormat(l/1000*f.fontSize, h, s[j:], "", 0, "", false, link, linkStr)
+			f.CellFormat(l/1000*f.fontSize, h, s[j:], "", 0, "", fill, link, linkStr)
 		}
 	}
 }
